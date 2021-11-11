@@ -1,32 +1,37 @@
-import { Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import {
+  Container,
+  createTheme,
+  CssBaseline,
+  ThemeProvider,
+} from "@mui/material";
+import { useState } from "react";
 import Catalog from "../../features/catalog/Catalog";
-import { Product } from "../models/product";
+import Header from "./Header";
 
 function App() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [darkMode, setDarkMode] = useState(false);
+  const paletteType = darkMode ? "dark" : "light";
+  const theme = createTheme({
+    palette: {
+      mode: paletteType,
+      background: {
+        default: paletteType === 'light' ? '#eaeaea' : '#121212'
+      }
+    },
+  });
 
-  useEffect(() => {
-    fetch('http://localhost:5000/api/products')
-    .then(response => response.json())
-    .then(data => setProducts(data));
-  }, []); //dependency, boş array 1 kereç çalışsın demek,  hiç koymazsan sonsuz çalışır
-
-  function addProduct() {
-    setProducts(prevState => [...prevState, {
-      id: prevState.length + 101,
-      name: 'product' + (prevState.length+1),
-      price : 100,
-      brand: 'some brand',
-      description: 'some desc',
-      pictureUrl: 'http://picsum.photos/200'
-    }])
+  function handleThemeChange() {
+    setDarkMode(!darkMode);
   }
+
   return (
-    <>
-     <Typography variant="h1">Re-Store</Typography>
-     <Catalog products={products} addProduct={addProduct} />
-    </>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Header darkMode={darkMode} handleThemeChange={handleThemeChange} />
+      <Container>
+        <Catalog />
+      </Container>
+    </ThemeProvider>
   );
 }
 

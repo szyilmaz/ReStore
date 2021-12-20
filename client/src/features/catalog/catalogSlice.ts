@@ -60,7 +60,9 @@ function initParams() {
         searchTerm : '',
         pageNumber: 1,
         pageSize: 6,
-        orderBy: 'name'
+        orderBy: 'name',
+        brands: [],
+        types: []
     }
 }
 

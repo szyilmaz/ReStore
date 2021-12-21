@@ -1,7 +1,18 @@
 import { createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import agent from "../../app/api/agent";
+import { MetaData } from "../../app/models/pagination";
 import { Product, ProductParams } from "../../app/models/product";
 import { RootState } from "../../app/store/configureStore";
+
+interface CatalogState {
+    productsLoaded: boolean;
+    filtersLoaded: boolean;
+    status: string;
+    brands: string[];
+    types: string[];
+    productParams: ProductParams;
+    metaData: MetaData | null;
+}
 
 const productsAdapter = createEntityAdapter<Product>();
 
@@ -13,8 +24,8 @@ function getAxiosParams(productParams: ProductParams) {
     params.append('orderBy', productParams.orderBy);
 
     if(productParams.searchTerm) params.append('searchTerm', productParams.searchTerm);
-    if(productParams.brands) params.append('brands', productParams.brands.toString());
-    if(productParams.types) params.append('types', productParams.types.toString());
+    if(productParams.brands.length > 0) params.append('brands', productParams.brands.toString());
+    if(productParams.types.length > 0) params.append('types', productParams.types.toString());
 
     return params;
 }
@@ -24,7 +35,9 @@ export const fetchProductsAsync = createAsyncThunk<Product[], void, {state: Root
     async (_, thunkAPI) => {
         const params = getAxiosParams(thunkAPI.getState().catalog.productParams);
         try {
-            return await agent.Catalog.list(params);
+            const response = await agent.Catalog.list(params);
+            thunkAPI.dispatch(setMetaData(response.metaData));
+            return response.items;
         } catch (error: any) {
             return thunkAPI.rejectWithValue({error: error.data})
         }
@@ -68,18 +81,26 @@ function initParams() {
 
 export const catalogSlice = createSlice({
     name: 'catalog',
-    initialState: productsAdapter.getInitialState({
+    initialState: productsAdapter.getInitialState<CatalogState>({
         productsLoaded: false,
         filtersLoaded: false,
         status: 'idle',
         brands: [],
         types: [],
-        productParams : initParams()
+        productParams : initParams(),
+        metaData: null
     }),
     reducers: {
         setProductParams: (state, action) => {
             state.productsLoaded = false;
+            state.productParams ={...state.productParams, ...action.payload, pageNumber: 1};
+        },
+        setPageNumber : (state, action) => {
+            state.productsLoaded = false;
             state.productParams ={...state.productParams, ...action.payload};
+        },
+        setMetaData: (state, action) => {
+            state.metaData = action.payload;
         },
         resetProductParams: (state) => {
             state.productParams = initParams()
@@ -127,4 +148,4 @@ export const catalogSlice = createSlice({
 
 export const productSelectors = productsAdapter.getSelectors((state: RootState) => state.catalog);
 
-export const {setProductParams, resetProductParams} = catalogSlice.actions;
+export const {setProductParams, resetProductParams, setMetaData, setPageNumber} = catalogSlice.actions;

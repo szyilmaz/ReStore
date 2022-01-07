@@ -6,9 +6,6 @@ import { useAppSelector } from "../store/configureStore";
 interface Props extends RouteProps {
     component: ComponentType<RouteComponentProps<any>> | ComponentType<any>
 }
-
-
-
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated.
 export default function PrivateRoute({ component: Component, ...rest }: Props) {

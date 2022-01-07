@@ -7,13 +7,14 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { Paper } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { LoadingButton } from '@mui/lab';
 import agent from '../../app/api/agent';
+import { toast } from 'react-toastify';
 
 export default function Register() {
-  //const history = useHistory();
+  const history = useHistory();
   const {register, handleSubmit, setError, formState: {isSubmitting, errors, isValid}} = useForm({
       mode: 'all'
   });
@@ -43,7 +44,12 @@ export default function Register() {
           </Typography>
           <Box component="form" 
           onSubmit={handleSubmit((data) => 
-            agent.Account.register(data).catch(error => handleApiErrors(error)))
+            agent.Account.register(data)
+            .then(() => {
+              toast.success('Registration successfull - you can now login');
+              history.push('/login');
+            })
+            .catch(error => handleApiErrors(error)))
           } 
           noValidate 
           sx={{ mt: 1 }}>

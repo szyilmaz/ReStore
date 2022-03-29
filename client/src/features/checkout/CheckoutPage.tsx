@@ -21,7 +21,10 @@ function getStepContent(step: number) {
 }
 
 export default function CheckoutPage() {
-    const methods = useForm();
+    const methods = useForm({
+        mode: 'all',
+        resolver: yupResolver
+    });
     const [activeStep, setActiveStep] = useState(0);
 
     const handleNext = (data: FieldValues) => {

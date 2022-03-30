@@ -2,8 +2,10 @@ import {Box,Button,Paper,Step,StepLabel,Stepper,Typography} from "@mui/material"
 import { useState } from "react";
 import { FieldValues, FormProvider, useForm } from "react-hook-form";
 import AddressForm from "./AddressForm";
+import { validationSchema } from "./checkoutValidation";
 import PaymentForm from "./PaymentForm";
 import Review from "./Review";
+import { yupResolver } from '@hookform/resolvers/yup';
 
 const steps = ["Shipping address", "Review your order", "Payment details"];
 
@@ -23,7 +25,7 @@ function getStepContent(step: number) {
 export default function CheckoutPage() {
     const methods = useForm({
         mode: 'all',
-        resolver: yupResolver
+        resolver: yupResolver(validationSchema)
     });
     const [activeStep, setActiveStep] = useState(0);
 

@@ -2,7 +2,8 @@ import { Checkbox, FormControlLabel } from '@mui/material'
 import { useController, UseControllerProps } from 'react-hook-form'
 
 interface Props extends UseControllerProps {
-    label: string
+    label: string;
+    disabled: boolean;
 }
 
 const AppCheckBox = (props: Props) => {
@@ -14,6 +15,7 @@ const AppCheckBox = (props: Props) => {
                 {...field}
                 checked={field.value}
                 color='secondary'
+                disabled={props.disabled}
             />
         }
         label={props.label}

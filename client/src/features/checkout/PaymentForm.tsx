@@ -5,6 +5,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { useFormContext } from 'react-hook-form';
 import AppTextInput from '../../app/components/AppTextInput';
+import { CardNumberElement } from '@stripe/react-stripe-js';
+import { StripeInput } from './StripeInput';
 
 export default function PaymentForm() {
   const { control } = useFormContext();
@@ -19,12 +21,18 @@ export default function PaymentForm() {
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
-            //required
             id="cardNumber"
             label="Card number"
             fullWidth
             autoComplete="cc-number"
             variant="standard"
+            InputLabelProps={{shrink: true}}
+            InputProps={{
+              inputComponent: StripeInput,
+              inputProps: {
+                component: CardNumberElement
+              }
+            }}
           />
         </Grid>
         <Grid item xs={12} md={6}>

@@ -13,7 +13,7 @@ export default function Inventory() {
     const {products, metaData} = useProducts();
     const dispatch = useAppDispatch();
     const [editMode, setEditMode] = useState(false);
-    const [selectedProducts, setSelectedProduct] = useState<Product | undefined>(undefined);
+    const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(undefined);
 
     function handleSelectProduct(product: Product) {
         setSelectedProduct(product);
@@ -21,10 +21,11 @@ export default function Inventory() {
     }
 
     function cancelEdit() {
-        
+        if (selectedProduct) setSelectedProduct(undefined);
+        setEditMode(false);
     }
 
-    if(editMode) return <ProductForm />
+    if(editMode) return <ProductForm product={selectedProduct} cancelEdit={cancelEdit} />
 
     return (
         <>
@@ -65,7 +66,7 @@ export default function Inventory() {
                                 <TableCell align="center">{product.brand}</TableCell>
                                 <TableCell align="center">{product.quantityInStock}</TableCell>
                                 <TableCell align="right">
-                                    <Button startIcon={<Edit />} />
+                                    <Button onClick={() => handleSelectProduct(product)} startIcon={<Edit />} />
                                     <Button startIcon={<Delete />} color='error' />
                                 </TableCell>
                             </TableRow>

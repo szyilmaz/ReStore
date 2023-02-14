@@ -63,8 +63,7 @@ const requests = {
     delete: (url: string) => axios.delete(url).then(responseBody),
     postForm: (url: string, data: FormData) => axios.post(url, data, {
         headers: {'Content-type': 'multipart/form-data'}
-    }),
-    putForm
+    })
 }
 
 const Catalog = {
